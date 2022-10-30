@@ -1,0 +1,70 @@
+# Default values for rabbitmq-cluster.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+labels:
+  app: rabbitmq-cluster
+  helm: "true"
+
+replicaCount: 3
+
+image:
+  repository: rabbitmq:3.8.9-management
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+configmap:
+  name: rabbitmq-configmap
+
+secret:
+  name: rabbitmq-secret          
+
+username: rabbitmq
+password: password
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: "rabbitmq-cluster"
+
+service:
+  headless:
+    name: rabbitmq-cluster-svc
+  loadbalancer:
+    name: rabbitmq-cluster-lb
+    type: ClusterIP
+
+#deploy to diff Nodes
+affinity:
+  nodeAntiAffinity: true
+
+nodeSelector:
+  rabbitmq: "true"
+
+resources:
+  enable: true
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+persistence:
+  storageClass:
+    enable: false
+    name: test-sc
+    size: 1Gi
+    accessModes:
+      - ReadWriteOnce 
+  hostPath:
+    enable: false
+    path: /data/rabbitmq
+    type: DirectoryOrCreate
+  #emptyDir: true
+
+tolerations: []
+
